@@ -84,20 +84,10 @@ class BuildContext:
         return {
             # Nested device information
             "device": {
-                "vendor_id": (
-                    f"0x{self.vendor_id:04x}" if self.vendor_id is not None else None
-                ),
-                "device_id": (
-                    f"0x{self.device_id:04x}" if self.device_id is not None else None
-                ),
-                "class_code": (
-                    f"0x{self.class_code:06x}" if self.class_code is not None else None
-                ),
-                "revision_id": (
-                    f"0x{self.revision_id:02x}"
-                    if self.revision_id is not None
-                    else None
-                ),
+                "vendor_id": format_hex(self.vendor_id, 4),
+                "device_id": format_hex(self.device_id, 4),
+                "class_code": format_hex(self.class_code, 6),
+                "revision_id": format_hex(self.revision_id, 2),
             },
             # Nested board information
             "board": {
@@ -153,7 +143,6 @@ class BuildContext:
             "batch_mode": self.batch_mode,
         }
 
-
 @runtime_checkable
 class DeviceConfigProvider(Protocol):
     """Protocol for device configuration providers."""
@@ -162,6 +151,12 @@ class DeviceConfigProvider(Protocol):
         """Get device configuration for the specified profile."""
         ...
 
+def format_hex(val: Union[int, str, None], width: int = 4) -> Optional[str]:
+    if val is None:
+        return None
+    if isinstance(val, str):
+        return val if val.startswith("0x") else f"0x{val}"
+    return f"0x{val:0{width}x}"
 
 class ConstraintManager:
     """Manages XDC constraint file operations."""

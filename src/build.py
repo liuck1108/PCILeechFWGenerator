@@ -185,7 +185,14 @@ class FirmwareBuilder:
         proj_tcl = self.out_dir / "vivado_project.tcl"
         build_tcl = self.out_dir / "vivado_build.tcl"
 
-        buildContext = self.tcl.create_build_context(board=self.board)
+        buildContext = self.tcl.create_build_context(
+            board=self.board,
+            device_id=ctx["device_config"]["device_id"],
+            class_code=ctx["device_config"]["class_code"],
+            revision_id=ctx["device_config"]["revision_id"],
+            class_code_str=ctx["device_config"]["class_code_str"],
+            vendor_id=ctx["device_config"]["vendor_id"],
+        )
 
         proj_tcl.write_text(self.tcl.build_pcileech_project_script(buildContext))
         build_tcl.write_text(self.tcl.build_pcileech_build_script(buildContext))
