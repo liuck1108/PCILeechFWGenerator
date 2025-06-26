@@ -345,7 +345,7 @@ class TCLBuilder:
     def _init_device_config(self, device_profile: str):
         """Initialize device configuration with robust error handling."""
         try:
-            from device_clone.device_config import get_device_config
+            from src.device_clone.device_config import get_device_config
 
             self.device_config = get_device_config(device_profile)
         except ImportError as e:
