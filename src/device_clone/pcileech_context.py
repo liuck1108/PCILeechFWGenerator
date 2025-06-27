@@ -1563,7 +1563,7 @@ class PCILeechContextBuilder:
                 inter_burst_gap=16,
                 timeout_cycles=2048,
                 clock_frequency_mhz=max(50.0, avg_frequency / 1000),
-                timing_regularity=0.29
+                timing_regularity=0.85
             )
         else:  # Medium speed device
             log_info_safe(
@@ -1580,7 +1580,7 @@ class PCILeechContextBuilder:
                 inter_burst_gap=8,
                 timeout_cycles=1024,
                 clock_frequency_mhz=100.0,
-                timing_regularity=0.81
+                timing_regularity=0.90
             )
 
     def _generate_timing_from_device(
@@ -1677,7 +1677,7 @@ class PCILeechContextBuilder:
                 inter_burst_gap=4 + (device_hash % 12),  # 4-16
                 timeout_cycles=512 + (device_hash % 1536),  # 512-2048
                 clock_frequency_mhz=75.0 + (device_hash % 125),  # 75-200 MHz
-                timing_regularity=0.92
+                timing_regularity=0.85 + (device_hash % 15)/100.0 
             )
 
     def _build_pcileech_config(

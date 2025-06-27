@@ -185,7 +185,6 @@ class FirmwareBuilder:
         proj_tcl = self.out_dir / "vivado_project.tcl"
         build_tcl = self.out_dir / "vivado_build.tcl"
 
-
         self.tcl.build_all_tcl_scripts(
             board=self.board,
             device_id=ctx["device_config"]["device_id"],
