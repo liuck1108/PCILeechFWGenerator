@@ -706,7 +706,7 @@ class PCILeechGenerator:
             behavior_profile = template_context.get("device_config", {}).get(
                 "behavior_profile"
             )
-            modules = self.sv_generator.generate_pcileech_modules(
+            modules = self.sv_generator.generate_systemverilog_modules(
                 template_context=template_context, behavior_profile=behavior_profile
             )
 

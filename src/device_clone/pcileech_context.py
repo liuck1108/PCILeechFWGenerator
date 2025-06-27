@@ -124,6 +124,7 @@ class TimingParameters:
     inter_burst_gap: int
     timeout_cycles: int
     clock_frequency_mhz: float
+    timing_regularity: float
 
     def __post_init__(self):
         """Validate timing parameters."""
@@ -135,6 +136,7 @@ class TimingParameters:
                 self.burst_length,
                 self.inter_burst_gap,
                 self.timeout_cycles,
+                self.timing_regularity
             ]
         ):
             raise ContextError("Timing parameters must be positive")
@@ -1544,6 +1546,7 @@ class PCILeechContextBuilder:
                 inter_burst_gap=4,
                 timeout_cycles=512,
                 clock_frequency_mhz=min(200.0, avg_frequency / 1000),
+                timing_regularity=0.92
             )
         elif avg_interval > 1000:  # Slow device
             log_info_safe(
@@ -1560,6 +1563,7 @@ class PCILeechContextBuilder:
                 inter_burst_gap=16,
                 timeout_cycles=2048,
                 clock_frequency_mhz=max(50.0, avg_frequency / 1000),
+                timing_regularity=0.29
             )
         else:  # Medium speed device
             log_info_safe(
@@ -1576,6 +1580,7 @@ class PCILeechContextBuilder:
                 inter_burst_gap=8,
                 timeout_cycles=1024,
                 clock_frequency_mhz=100.0,
+                timing_regularity=0.81
             )
 
     def _generate_timing_from_device(
@@ -1614,6 +1619,7 @@ class PCILeechContextBuilder:
                 inter_burst_gap=4,
                 timeout_cycles=512,
                 clock_frequency_mhz=125.0,
+                timing_regularity=0.92
             )
         # Storage controllers (class 01xxxx)
         elif class_code.startswith("01"):
@@ -1630,6 +1636,7 @@ class PCILeechContextBuilder:
                 inter_burst_gap=8,
                 timeout_cycles=1024,
                 clock_frequency_mhz=100.0,
+                timing_regularity=0.92
             )
         # Display controllers (class 03xxxx)
         elif class_code.startswith("03"):
@@ -1646,6 +1653,7 @@ class PCILeechContextBuilder:
                 inter_burst_gap=8,
                 timeout_cycles=2048,
                 clock_frequency_mhz=150.0,
+                timing_regularity=0.92
             )
         else:
             log_info_safe(
@@ -1669,6 +1677,7 @@ class PCILeechContextBuilder:
                 inter_burst_gap=4 + (device_hash % 12),  # 4-16
                 timeout_cycles=512 + (device_hash % 1536),  # 512-2048
                 clock_frequency_mhz=75.0 + (device_hash % 125),  # 75-200 MHz
+                timing_regularity=0.92
             )
 
     def _build_pcileech_config(

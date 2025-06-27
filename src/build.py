@@ -176,7 +176,7 @@ class FirmwareBuilder:
         if profile_secs > 0:
             profile = self.profiler.capture_behavior_profile(duration=profile_secs)
             profile_file = self.out_dir / "behavior_profile.json"
-            profile_file.write_text(profile.json(indent=2))  # type: ignore[attr-defined]
+            profile_file.write_text(json.dumps(profile, indent=2, default=lambda o: o.__dict__ if hasattr(o, '__dict__') else str(o)))
             log.info("  • Saved behaviour profile → %s", profile_file.name)
 
         # TCL scripts (always two‑script flow)
@@ -185,17 +185,14 @@ class FirmwareBuilder:
         proj_tcl = self.out_dir / "vivado_project.tcl"
         build_tcl = self.out_dir / "vivado_build.tcl"
 
-        buildContext = self.tcl.create_build_context(
+
+        self.tcl.build_all_tcl_scripts(
             board=self.board,
             device_id=ctx["device_config"]["device_id"],
             class_code=ctx["device_config"]["class_code"],
             revision_id=ctx["device_config"]["revision_id"],
-            class_code_str=ctx["device_config"]["class_code_str"],
             vendor_id=ctx["device_config"]["vendor_id"],
         )
-
-        proj_tcl.write_text(self.tcl.build_pcileech_project_script(buildContext))
-        build_tcl.write_text(self.tcl.build_pcileech_build_script(buildContext))
 
         log.info("  • Emitted Vivado scripts → %s, %s", proj_tcl.name, build_tcl.name)
 
@@ -240,7 +237,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     p.add_argument(
         "--profile",
         type=int,
-        default=0,
+        default=30,
         metavar="SECONDS",
         help="Capture behaviour profile",
     )
